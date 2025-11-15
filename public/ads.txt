@@ -1,0 +1,14 @@
+# Google AdSense ads.txt file
+# Replace pub-XXXXXXXXXXXXXXXX with your actual AdSense publisher ID
+
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+
+# Instructions:
+# 1. Get your AdSense publisher ID from your AdSense account
+# 2. Replace pub-XXXXXXXXXXXXXXXX with your actual ID
+# 3. Uncomment the line by removing the # at the beginning
+# 4. Deploy this file to your website root
+
+# Additional ad networks can be added below
+# Example:
+# adnetwork.com, 123456, RESELLER, xxxxxxxxxxxxx
