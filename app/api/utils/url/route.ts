@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       const attempt = safeDecode(body.text);
       if (attempt.success) {
         operation = 'decode';
-        result = attempt.result;
+        result = attempt.result ?? '';
       } else {
         operation = 'encode';
         result = encodeURIComponent(body.text);

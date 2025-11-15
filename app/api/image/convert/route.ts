@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     const outputBuffer = await sharpInstance.toBuffer();
 
-    return new NextResponse(outputBuffer, {
+    return new NextResponse(Buffer.from(outputBuffer), {
       headers: {
         'Content-Type': `image/${format === 'jpg' ? 'jpeg' : format}`,
         'Content-Disposition': `attachment; filename="converted.${format}"`,

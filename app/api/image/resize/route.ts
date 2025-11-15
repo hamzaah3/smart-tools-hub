@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     const metadata = await sharp(Buffer.from(buffer)).metadata();
     const format = metadata.format || 'png';
 
-    return new NextResponse(outputBuffer, {
+    return new NextResponse(Buffer.from(outputBuffer), {
       headers: {
         'Content-Type': `image/${format}`,
         'Content-Disposition': `attachment; filename="resized.${format}"`,

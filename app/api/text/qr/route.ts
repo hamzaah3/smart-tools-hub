@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Return as image
-    return new NextResponse(qrBuffer, {
+    return new NextResponse(Buffer.from(qrBuffer), {
       headers: {
         'Content-Type': 'image/png',
         'Content-Disposition': 'attachment; filename="qrcode.png"',
