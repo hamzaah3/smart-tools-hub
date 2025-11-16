@@ -1,20 +1,50 @@
 'use client';
 
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
+import { FileText, Image as ImageIcon, QrCode, Table2, Type, Wrench, ArrowRight } from 'lucide-react';
 import { PDFTools } from './tools/PDFTools';
 import { ImageTools } from './tools/ImageTools';
 import { CSVTools } from './tools/CSVTools';
 import { TextTools } from './tools/TextTools';
 import { UtilityTools } from './tools/UtilityTools';
+import { QrTools } from './tools/QrTools';
+import { Pill } from './Pill';
 
-type ToolCategory = 'pdf' | 'image' | 'csv' | 'text' | 'utility' | null;
+type ToolCategory = 'pdf' | 'image' | 'csv' | 'text' | 'utility' | 'qr' | null;
 type CategoryId = Exclude<ToolCategory, null>;
+
+const pillStyles: Record<CategoryId, { solid: string; outline: string }> = {
+  pdf: {
+    solid: 'bg-sky-600 border-sky-500 text-sky-50',
+    outline: 'border-sky-500 text-sky-100',
+  },
+  image: {
+    solid: 'bg-amber-600 border-amber-500 text-amber-50',
+    outline: 'border-amber-500 text-amber-100',
+  },
+  csv: {
+    solid: 'bg-emerald-600 border-emerald-500 text-emerald-50',
+    outline: 'border-emerald-500 text-emerald-100',
+  },
+  text: {
+    solid: 'bg-fuchsia-600 border-fuchsia-500 text-fuchsia-50',
+    outline: 'border-fuchsia-500 text-fuchsia-100',
+  },
+  utility: {
+    solid: 'bg-violet-600 border-violet-500 text-violet-50',
+    outline: 'border-violet-500 text-violet-100',
+  },
+  qr: {
+    solid: 'bg-sky-700 border-sky-500 text-sky-50',
+    outline: 'border-sky-400 text-sky-100',
+  },
+};
 
 const toolCatalog: Array<{
   id: CategoryId;
   name: string;
   description: string;
-  icon: string;
+  icon: ReactNode;
   badge: string;
   accent: string;
   tools: Array<{ id: string; title: string; blurb: string }>;
@@ -23,8 +53,8 @@ const toolCatalog: Array<{
     id: 'pdf',
     name: 'PDF studio',
     badge: 'Documents',
-    icon: '📄',
-    accent: 'text-sky-600',
+    icon: <FileText className="h-4 w-4" />,
+    accent: 'text-sky-400',
     description: 'Merge, split, compress, rotate, or convert PDFs to clean images in seconds.',
     tools: [
       { id: 'merge', title: 'Merge PDFs', blurb: 'Combine multiple files into one.' },
@@ -38,8 +68,8 @@ const toolCatalog: Array<{
     id: 'image',
     name: 'Image lab',
     badge: 'Media',
-    icon: '🖼️',
-    accent: 'text-amber-600',
+    icon: <ImageIcon className="h-4 w-4" />,
+    accent: 'text-amber-400',
     description: 'Convert, resize, compress, or encode images with precise controls.',
     tools: [
       { id: 'convert', title: 'Format converter', blurb: 'Switch between PNG, JPG, WEBP, AVIF.' },
@@ -52,8 +82,8 @@ const toolCatalog: Array<{
     id: 'csv',
     name: 'CSV workshop',
     badge: 'Data',
-    icon: '📊',
-    accent: 'text-emerald-600',
+    icon: <Table2 className="h-4 w-4" />,
+    accent: 'text-emerald-400',
     description: 'Preview, clean, merge, and convert CSV data for quick sharing.',
     tools: [
       { id: 'preview', title: 'Preview CSV', blurb: 'Open any CSV and inspect the first rows.' },
@@ -66,22 +96,32 @@ const toolCatalog: Array<{
     id: 'text',
     name: 'Text desk',
     badge: 'Writing',
-    icon: '📝',
-    accent: 'text-fuchsia-600',
-    description: 'Count words, format JSON, convert case styles, or build QR codes.',
+    icon: <Type className="h-4 w-4" />,
+    accent: 'text-fuchsia-400',
+    description: 'Count words, format JSON, and convert case styles.',
     tools: [
       { id: 'word-count', title: 'Word counter', blurb: 'Words, characters, pace, and more.' },
       { id: 'case', title: 'Case converter', blurb: 'Upper, lower, sentence, and title case.' },
       { id: 'json', title: 'JSON formatter', blurb: 'Validate and pretty-print JSON text.' },
-      { id: 'qr', title: 'QR code maker', blurb: 'Create a downloadable QR in one click.' },
+    ],
+  },
+  {
+    id: 'qr',
+    name: 'QR studio',
+    badge: 'Codes',
+    icon: <QrCode className="h-4 w-4" />,
+    accent: 'text-sky-400',
+    description: 'Create QR codes for links, WiFi, contact actions, and messages.',
+    tools: [
+      { id: 'qr-studio', title: 'QR generator', blurb: 'URL, text, WiFi, email, phone, SMS, WhatsApp.' },
     ],
   },
   {
     id: 'utility',
     name: 'Utility drawer',
     badge: 'Everyday',
-    icon: '🧰',
-    accent: 'text-violet-600',
+    icon: <Wrench className="h-4 w-4" />,
+    accent: 'text-violet-400',
     description: 'Generate passwords, convert colors, encode URLs, or switch units.',
     tools: [
       { id: 'password', title: 'Password generator', blurb: 'Create and copy secure strings.' },
@@ -94,6 +134,7 @@ const toolCatalog: Array<{
 
 export function Dashboard() {
   const [activeCategory, setActiveCategory] = useState<ToolCategory>(null);
+  const [activeToolId, setActiveToolId] = useState<string | null>(null);
 
   return (
     <section id="tools" className="bg-slate-50 py-14">
@@ -109,19 +150,34 @@ export function Dashboard() {
 
         <div className="mt-12 space-y-10">
           {toolCatalog.map((category) => (
-            <div key={category.id} id={category.id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-10">
+            <div
+              key={category.id}
+              id={category.id}
+              className="rounded-3xl border border-emerald-500/40 bg-gradient-to-br from-emerald-500/10 via-slate-950 to-slate-950 p-6 shadow-lg shadow-slate-900/40 md:p-10"
+            >
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <div className="flex items-center gap-3 text-base font-semibold uppercase tracking-wide text-slate-500">
-                    <span>{category.badge}</span>
-                    <span className="text-slate-300">•</span>
-                    <span className={category.accent}>{category.icon} {category.name}</span>
+                  <div className="mb-3 flex flex-wrap items-center gap-2">
+                    <Pill
+                      label={category.badge}
+                      icon={category.icon}
+                      variant="solid"
+                      className={`uppercase tracking-[0.2em] text-[0.7rem] ${pillStyles[category.id].solid}`}
+                    />
+                    <Pill
+                      label={category.name}
+                      variant="outline"
+                      className={`uppercase tracking-[0.2em] text-[0.7rem] ${pillStyles[category.id].outline}`}
+                    />
                   </div>
-                  <p className="mt-2 text-lg text-slate-600">{category.description}</p>
+                  <p className="text-lg text-slate-100">{category.description}</p>
                 </div>
                 <button
-                  onClick={() => setActiveCategory(category.id)}
-                  className="self-start rounded-full border border-slate-200 px-6 py-2 text-sm font-semibold text-slate-900 hover:border-slate-300 hover:bg-slate-50"
+                  onClick={() => {
+                    setActiveCategory(category.id);
+                    setActiveToolId(null);
+                  }}
+                  className="self-start rounded-full border border-slate-700 px-6 py-2 text-sm font-semibold text-slate-50 hover:border-slate-500 hover:bg-slate-900/80"
                 >
                   Open {category.name}
                 </button>
@@ -131,28 +187,17 @@ export function Dashboard() {
                 {category.tools.map((tool) => (
                   <button
                     key={tool.id}
-                    onClick={() => setActiveCategory(category.id)}
-                    className="group h-full rounded-2xl border border-slate-100 bg-slate-50/40 p-5 text-left transition hover:-translate-y-1 hover:border-slate-200 hover:bg-white"
+                    onClick={() => {
+                      setActiveCategory(category.id);
+                      setActiveToolId(tool.id);
+                    }}
+                    className="group h-full rounded-2xl border border-slate-800 bg-black p-5 text-left transition hover:-translate-y-1 hover:border-slate-600 hover:bg-slate-900"
                   >
-                    <div className="text-sm font-semibold uppercase tracking-widest text-slate-400">
-                      {category.icon} {category.badge}
-                    </div>
-                    <p className="mt-3 text-lg font-semibold text-slate-900">{tool.title}</p>
-                    <p className="mt-2 text-sm text-slate-600">{tool.blurb}</p>
-                    <span className="mt-4 inline-flex items-center text-sm font-semibold text-sky-600">
+                    <p className="text-lg font-semibold text-slate-50">{tool.title}</p>
+                    <p className="mt-2 text-sm text-slate-300">{tool.blurb}</p>
+                    <span className="mt-4 inline-flex items-center text-sm font-semibold text-sky-400">
                       Launch tool
-                      <svg
-                        className="ml-2 h-4 w-4 transition group-hover:translate-x-1"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 12h14" />
-                        <path d="m12 5 7 7-7 7" />
-                      </svg>
+                      <ArrowRight className="ml-2 h-4 w-4 transition group-hover:translate-x-1" />
                     </span>
                   </button>
                 ))}
@@ -160,23 +205,63 @@ export function Dashboard() {
             </div>
           ))}
 
-          <div className="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-white p-8 text-center shadow-sm md:p-12">
-            <h3 className="text-2xl font-bold text-emerald-800">Your files stay yours</h3>
-            <p className="mt-3 text-lg text-emerald-700">
+          <div className="rounded-3xl border border-emerald-500/40 bg-gradient-to-br from-emerald-500/10 via-slate-950 to-slate-950 p-8 text-center shadow-lg shadow-slate-900/40 md:p-12">
+            <h3 className="text-2xl font-bold text-emerald-200">Your files stay yours</h3>
+            <p className="mt-3 text-lg text-emerald-100">
               Conversions run in secure containers. We delete your uploads immediately after processing.
             </p>
-            <p className="mt-1 text-sm text-emerald-600">
+            <p className="mt-1 text-sm text-emerald-300/80">
               No accounts, no tracking, just fast results.
             </p>
           </div>
         </div>
       </div>
 
-      {activeCategory === 'pdf' && <PDFTools onClose={() => setActiveCategory(null)} />}
-      {activeCategory === 'image' && <ImageTools onClose={() => setActiveCategory(null)} />}
-      {activeCategory === 'csv' && <CSVTools onClose={() => setActiveCategory(null)} />}
-      {activeCategory === 'text' && <TextTools onClose={() => setActiveCategory(null)} />}
-      {activeCategory === 'utility' && <UtilityTools onClose={() => setActiveCategory(null)} />}
+      {activeCategory === 'pdf' && (
+        <PDFTools
+          onClose={() => {
+            setActiveCategory(null);
+            setActiveToolId(null);
+          }}
+          initialToolId={activeToolId as any}
+        />
+      )}
+      {activeCategory === 'image' && (
+        <ImageTools
+          onClose={() => {
+            setActiveCategory(null);
+            setActiveToolId(null);
+          }}
+          initialToolId={activeToolId as any}
+        />
+      )}
+      {activeCategory === 'csv' && (
+        <CSVTools
+          onClose={() => {
+            setActiveCategory(null);
+            setActiveToolId(null);
+          }}
+          initialToolId={activeToolId as any}
+        />
+      )}
+      {activeCategory === 'text' && (
+        <TextTools
+          onClose={() => {
+            setActiveCategory(null);
+            setActiveToolId(null);
+          }}
+          initialToolId={activeToolId as any}
+        />
+      )}
+      {activeCategory === 'utility' && (
+        <UtilityTools
+          onClose={() => {
+            setActiveCategory(null);
+            setActiveToolId(null);
+          }}
+          initialToolId={activeToolId as any}
+        />
+      )}
     </section>
   );
 }

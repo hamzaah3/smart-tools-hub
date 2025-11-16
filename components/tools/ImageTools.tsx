@@ -1,25 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
+type ImageToolId = 'convert' | 'resize' | 'compress' | 'base64';
+
 interface ImageToolsProps {
   onClose: () => void;
+  initialToolId?: ImageToolId;
 }
 
-export function ImageTools({ onClose }: ImageToolsProps) {
-  const [selectedTool, setSelectedTool] = useState<string | null>(null);
+export function ImageTools({ onClose, initialToolId }: ImageToolsProps) {
+  const [selectedTool, setSelectedTool] = useState<ImageToolId | null>(initialToolId ?? null);
   const [files, setFiles] = useState<FileList | null>(null);
   const [options, setOptions] = useState({ format: 'png', width: '', height: '', quality: 80 });
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const tools = [
+  const tools: Array<{ id: ImageToolId; name: string; description: string }> = [
     { id: 'convert', name: 'Convert Format', description: 'JPG, PNG, WEBP, AVIF' },
     { id: 'resize', name: 'Resize Image', description: 'Change dimensions' },
     { id: 'compress', name: 'Compress', description: 'Reduce file size' },
     { id: 'base64', name: 'Base64 Encode', description: 'Convert to Base64' },
   ];
+
+  useEffect(() => {
+    if (initialToolId) {
+      setSelectedTool(initialToolId);
+      setFiles(null);
+      setOptions({ format: 'png', width: '', height: '', quality: 80 });
+    }
+  }, [initialToolId]);
+
+  const currentTool = selectedTool
+    ? tools.find((tool) => tool.id === selectedTool)
+    : null;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -74,25 +89,34 @@ export function ImageTools({ onClose }: ImageToolsProps) {
       onClick={onClose}
     >
       <div className="w-full max-h-[90vh] max-w-4xl rounded-2xl bg-white p-8 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">🖼️ Image Tools</h2>
+        <div className="flex justify-between items-center mb-2">
+          <div>
+            <h2 className="text-2xl font-bold">
+              🖼️ {currentTool ? currentTool.name : 'Image Tools'}
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {currentTool ? currentTool.description : 'Choose what you want to do, then add your images.'}
+            </p>
+          </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-2xl">✕</button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {tools.map((tool) => (
-            <button
-              key={tool.id}
-              onClick={() => setSelectedTool(tool.id)}
-            className={`p-4 rounded-xl border-2 transition-colors ${
-                selectedTool === tool.id ? 'border-sky-300 bg-sky-50' : 'border-slate-200 hover:border-slate-300'
-              }`}
-            >
-              <h3 className="font-semibold mb-1 text-sm">{tool.name}</h3>
-              <p className="text-xs text-slate-500">{tool.description}</p>
-            </button>
-          ))}
-        </div>
+        {!initialToolId && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {tools.map((tool) => (
+              <button
+                key={tool.id}
+                onClick={() => setSelectedTool(tool.id)}
+                className={`p-4 rounded-xl border-2 transition-colors ${
+                  selectedTool === tool.id ? 'border-sky-300 bg-sky-50' : 'border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                <h3 className="font-semibold mb-1 text-sm">{tool.name}</h3>
+                <p className="text-xs text-slate-500">{tool.description}</p>
+              </button>
+            ))}
+          </div>
+        )}
 
         {selectedTool && (
           <>

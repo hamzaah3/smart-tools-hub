@@ -1,10 +1,11 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
 interface ToolCardProps {
   title: string;
-  icon: string;
+  icon: ReactNode;
   description: string;
   onClick: () => void;
 }
@@ -12,14 +13,16 @@ interface ToolCardProps {
 export function ToolCard({ title, icon, description, onClick }: ToolCardProps) {
   return (
     <motion.div
-      whileHover={{ scale: 1.05, y: -5 }}
-      whileTap={{ scale: 0.95 }}
-      className="cursor-pointer rounded-xl border border-slate-200 bg-white p-6 shadow-lg transition-shadow hover:-translate-y-1 hover:shadow-xl"
+      whileHover={{ scale: 1.03, y: -4 }}
+      whileTap={{ scale: 0.97 }}
+      className="cursor-pointer rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-lg shadow-slate-900/40 transition hover:-translate-y-1 hover:shadow-xl"
       onClick={onClick}
     >
-      <div className="text-4xl mb-3">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-slate-500">{description}</p>
+      <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-800 text-slate-100">
+        {icon}
+      </div>
+      <h3 className="mb-2 text-lg font-semibold text-white">{title}</h3>
+      <p className="text-sm text-slate-300">{description}</p>
     </motion.div>
   );
 }

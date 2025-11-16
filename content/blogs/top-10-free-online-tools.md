@@ -3,7 +3,7 @@ title: "Top 10 Free Online Tools for Daily Productivity"
 date: "2024-11-12"
 description: "Discover the best free online tools that can boost your productivity and simplify your daily workflow. No downloads required!"
 slug: "top-10-free-online-tools"
-image: "/images/productivity-tools.png"
+image: "/images/pdf-to-image-converter.jpg"
 author: "SmartToolsHub Team"
 tags: ["Productivity", "Tools", "Workflow"]
 ---

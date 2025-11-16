@@ -1,19 +1,32 @@
 'use client';
 
-import { useState } from 'react';
-
-const getInitialConsentState = () => {
-  if (typeof window === 'undefined') {
-    return false;
-  }
-  return !localStorage.getItem('cookie-consent');
-};
+import { useEffect, useState } from 'react';
 
 export function CookieConsent() {
-  const [showConsent, setShowConsent] = useState(getInitialConsentState);
+  // Start with `false` on both server and client so the initial HTML matches.
+  const [showConsent, setShowConsent] = useState(false);
+
+  // Read from localStorage only on the client, after hydration.
+  useEffect(() => {
+    try {
+      const hasConsent = typeof window !== 'undefined'
+        ? window.localStorage.getItem('cookie-consent') === 'accepted'
+        : false;
+
+      if (!hasConsent) {
+        setShowConsent(true);
+      }
+    } catch {
+      // If localStorage is unavailable, silently skip showing the banner.
+    }
+  }, []);
 
   const acceptCookies = () => {
-    localStorage.setItem('cookie-consent', 'accepted');
+    try {
+      window.localStorage.setItem('cookie-consent', 'accepted');
+    } catch {
+      // Ignore write errors (e.g., privacy mode).
+    }
     setShowConsent(false);
   };
 

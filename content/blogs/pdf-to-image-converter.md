@@ -3,7 +3,7 @@ title: "How to Convert PDF to Image Online for Free"
 date: "2024-11-13"
 description: "Learn how to easily convert your PDF documents to high-quality images online. Fast, free, and secure PDF to image conversion tool."
 slug: "pdf-to-image-converter"
-image: "/images/pdf-convert.png"
+image: "/images/pdf-to-image-converter.jpg"
 author: "SmartToolsHub Team"
 tags: ["PDF", "Image Conversion", "Tools"]
 ---

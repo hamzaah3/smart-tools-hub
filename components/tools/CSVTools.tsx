@@ -1,25 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
+type CSVToolId = 'preview' | 'to-json' | 'clean' | 'merge';
+
 interface CSVToolsProps {
   onClose: () => void;
+  initialToolId?: CSVToolId;
 }
 
-export function CSVTools({ onClose }: CSVToolsProps) {
-  const [selectedTool, setSelectedTool] = useState<string | null>(null);
+export function CSVTools({ onClose, initialToolId }: CSVToolsProps) {
+  const [selectedTool, setSelectedTool] = useState<CSVToolId | null>(initialToolId ?? null);
   const [files, setFiles] = useState<FileList | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [preview, setPreview] = useState<string[][]>([]);
 
-  const tools = [
+  const tools: Array<{ id: CSVToolId; name: string; description: string }> = [
     { id: 'preview', name: 'Preview CSV', description: 'View CSV data' },
     { id: 'to-json', name: 'CSV to JSON', description: 'Convert to JSON' },
     { id: 'clean', name: 'Clean Data', description: 'Remove empty rows' },
     { id: 'merge', name: 'Merge CSVs', description: 'Combine files' },
   ];
+
+  useEffect(() => {
+    if (initialToolId) {
+      setSelectedTool(initialToolId);
+      setFiles(null);
+      setPreview([]);
+    }
+  }, [initialToolId]);
+
+  const currentTool = selectedTool
+    ? tools.find((tool) => tool.id === selectedTool)
+    : null;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -96,29 +111,38 @@ export function CSVTools({ onClose }: CSVToolsProps) {
       onClick={onClose}
     >
       <div className="w-full max-h-[90vh] max-w-4xl rounded-2xl bg-white p-8 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">📊 CSV Tools</h2>
+        <div className="flex justify-between items-center mb-2">
+          <div>
+            <h2 className="text-2xl font-bold">
+              📊 {currentTool ? currentTool.name : 'CSV Tools'}
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {currentTool ? currentTool.description : 'Choose a CSV action, then upload your files.'}
+            </p>
+          </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-2xl">✕</button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {tools.map((tool) => (
-            <button
-              key={tool.id}
-              onClick={() => {
-                setSelectedTool(tool.id);
-                setFiles(null);
-                setPreview([]);
-              }}
-              className={`p-4 rounded-xl border-2 transition-colors ${
-                selectedTool === tool.id ? 'border-emerald-300 bg-emerald-50' : 'border-slate-200 hover:border-slate-300'
-              }`}
-            >
-              <h3 className="font-semibold mb-1 text-sm">{tool.name}</h3>
-              <p className="text-xs text-slate-500">{tool.description}</p>
-            </button>
-          ))}
-        </div>
+        {!initialToolId && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {tools.map((tool) => (
+              <button
+                key={tool.id}
+                onClick={() => {
+                  setSelectedTool(tool.id);
+                  setFiles(null);
+                  setPreview([]);
+                }}
+                className={`p-4 rounded-xl border-2 transition-colors ${
+                  selectedTool === tool.id ? 'border-emerald-300 bg-emerald-50' : 'border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                <h3 className="font-semibold mb-1 text-sm">{tool.name}</h3>
+                <p className="text-xs text-slate-500">{tool.description}</p>
+              </button>
+            ))}
+          </div>
+        )}
 
         {selectedTool && (
             <div className="mb-6 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/40 p-8 text-center">

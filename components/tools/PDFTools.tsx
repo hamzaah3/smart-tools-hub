@@ -1,28 +1,45 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
+type PDFToolId = 'merge' | 'split' | 'compress' | 'rotate' | 'pdf-to-image';
+
 interface PDFToolsProps {
   onClose: () => void;
+  initialToolId?: PDFToolId;
 }
 
-export function PDFTools({ onClose }: PDFToolsProps) {
-  const [selectedTool, setSelectedTool] = useState<string | null>(null);
+export function PDFTools({ onClose, initialToolId }: PDFToolsProps) {
+  const [selectedTool, setSelectedTool] = useState<PDFToolId | null>(initialToolId ?? null);
   const [files, setFiles] = useState<FileList | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [splitRange, setSplitRange] = useState({ start: '1', end: '' });
   const [rotationAngle, setRotationAngle] = useState('90');
   const [imageFormat, setImageFormat] = useState<'png' | 'jpg'>('png');
 
-  const tools = [
+  const tools: Array<{ id: PDFToolId; name: string; description: string }> = [
     { id: 'merge', name: 'Merge PDFs', description: 'Combine multiple PDF files' },
     { id: 'split', name: 'Split PDF', description: 'Extract pages from PDF' },
     { id: 'compress', name: 'Compress PDF', description: 'Reduce PDF file size' },
     { id: 'rotate', name: 'Rotate PDF', description: 'Rotate PDF pages' },
     { id: 'pdf-to-image', name: 'PDF to Image', description: 'Convert PDF to images' },
   ];
+
+  useEffect(() => {
+    if (initialToolId) {
+      setSelectedTool(initialToolId);
+      setFiles(null);
+      setSplitRange({ start: '1', end: '' });
+      setRotationAngle('90');
+      setImageFormat('png');
+    }
+  }, [initialToolId]);
+
+  const currentTool = selectedTool
+    ? tools.find((tool) => tool.id === selectedTool)
+    : null;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -110,33 +127,42 @@ export function PDFTools({ onClose }: PDFToolsProps) {
       onClick={onClose}
     >
       <div className="w-full max-h-[90vh] max-w-4xl rounded-2xl bg-white p-8 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">📄 PDF Tools</h2>
+        <div className="flex justify-between items-center mb-2">
+          <div>
+            <h2 className="text-2xl font-bold">
+              📄 {currentTool ? currentTool.name : 'PDF Tools'}
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {currentTool ? currentTool.description : 'Pick a PDF action, then upload your files.'}
+            </p>
+          </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-2xl">✕</button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          {tools.map((tool) => (
-            <button
-              key={tool.id}
-              onClick={() => {
-                setSelectedTool(tool.id);
-                setFiles(null);
-                setSplitRange({ start: '1', end: '' });
-                setRotationAngle('90');
-                setImageFormat('png');
-              }}
-              className={`p-4 rounded-xl border-2 transition-colors ${
-                selectedTool === tool.id
-                  ? 'border-sky-300 bg-sky-50'
-                  : 'border-slate-200 hover:border-slate-300'
-              }`}
-            >
-              <h3 className="font-semibold mb-1">{tool.name}</h3>
-              <p className="text-sm text-slate-500">{tool.description}</p>
-            </button>
-          ))}
-        </div>
+        {!initialToolId && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {tools.map((tool) => (
+              <button
+                key={tool.id}
+                onClick={() => {
+                  setSelectedTool(tool.id);
+                  setFiles(null);
+                  setSplitRange({ start: '1', end: '' });
+                  setRotationAngle('90');
+                  setImageFormat('png');
+                }}
+                className={`p-4 rounded-xl border-2 transition-colors ${
+                  selectedTool === tool.id
+                    ? 'border-sky-300 bg-sky-50'
+                    : 'border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                <h3 className="font-semibold mb-1">{tool.name}</h3>
+                <p className="text-sm text-slate-500">{tool.description}</p>
+              </button>
+            ))}
+          </div>
+        )}
 
         {selectedTool && (
           <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/40 p-8 text-center">
