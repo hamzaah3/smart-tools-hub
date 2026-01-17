@@ -63,3 +63,306 @@ a {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Blog Post Typography Enhancements */
+.prose {
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  text-rendering: optimizeLegibility;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+}
+
+/* Force maximum bold for all headings */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  font-weight: 900 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Extra emphasis for H2 and H3 */
+.prose h2 {
+  font-weight: 900 !important;
+  font-size: 2.5rem !important;
+  text-transform: none !important;
+}
+
+.prose h3 {
+  font-weight: 900 !important;
+  font-size: 2rem !important;
+}
+
+/* Better spacing for blog content lists */
+.prose ul li > p,
+.prose ol li > p {
+  margin: 0 !important;
+}
+
+/* Professional bullet points */
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ul li::marker {
+  color: #2563EB;
+  font-size: 1em;
+}
+
+/* Checkmark bullets (✅) with special styling */
+.prose ul li {
+  position: relative;
+}
+
+/* Better code block styling */
+.prose pre {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Magazine-style link styling */
+.prose a {
+  color: #2563EB;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.prose a:hover {
+  text-decoration-color: #2563EB;
+  color: #1d4ed8;
+}
+
+/* Better table styling */
+.prose table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  border: 1px solid #e5e7eb;
+}
+
+.prose thead {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
+}
+
+.prose th {
+  border-bottom: 2px solid #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.prose td {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Improve heading anchor spacing */
+.prose h2:first-of-type {
+  margin-top: 0;
+}
+
+/* Professional section headers */
+.prose h2 {
+  position: relative;
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+
+.prose h2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -1.5rem;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #2563EB, #3b82f6);
+  border-radius: 2px;
+}
+
+/* Magazine-style blockquote/callout boxes */
+.prose blockquote {
+  border-radius: 0.5rem;
+  font-style: normal;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.prose blockquote p:first-of-type::before {
+  content: '';
+}
+
+.prose blockquote p:last-of-type::after {
+  content: '';
+}
+
+/* Better strong text - editorial style */
+.prose strong {
+  letter-spacing: -0.01em;
+  font-weight: 900 !important;
+  color: #111827;
+}
+
+/* Force bold for strong text */
+.prose p strong,
+.prose li strong,
+.prose td strong,
+.prose th strong {
+  font-weight: 900 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif !important;
+}
+
+/* Smooth reading experience */
+.prose p {
+  hyphens: auto;
+  word-break: break-word;
+}
+
+/* Editorial-style emphasized text */
+.prose em {
+  font-style: italic;
+  color: inherit;
+  font-weight: 400;
+}
+
+/* Professional HR divider */
+.prose hr {
+  border: none;
+  border-top: 3px double #e5e7eb;
+  margin: 3rem 0;
+}
+
+/* Publication-style subheadings */
+.prose h3 {
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+/* Magazine-style first paragraph */
+.prose > p:first-of-type {
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: #374151;
+}
+
+/* Professional numbered lists */
+.prose ol li::marker {
+  color: #2563EB;
+  font-weight: 700;
+}
+
+/* Better image captions */
+.prose figure {
+  margin: 2rem 0;
+}
+
+.prose figcaption {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+/* Dark mode improvements */
+@media (prefers-color-scheme: dark) {
+  .prose {
+    color-scheme: dark;
+  }
+  
+  .prose thead {
+    background: linear-gradient(to bottom, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  }
+  
+  .prose h2::before {
+    background: linear-gradient(to bottom, #3b82f6, #60a5fa);
+  }
+  
+  .prose strong {
+    color: #f9fafb;
+  }
+  
+  .prose table {
+    border-color: #374151;
+  }
+  
+  .prose th {
+    border-bottom-color: #4b5563;
+  }
+  
+  .prose td {
+    border-bottom-color: #374151;
+  }
+  
+  .prose h3 {
+    color: #f9fafb;
+    border-bottom-color: #374151;
+  }
+}
+
+/* Highlighted/Featured Content Box (like "NEED TO KNOW" sections) */
+.content-highlight-box {
+  border: 3px solid #1f2937;
+  padding: 2rem;
+  margin: 2.5rem 0;
+  background: #ffffff;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content-highlight-box::before {
+  content: attr(data-title);
+  position: absolute;
+  top: -0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  padding: 0 1rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1f2937;
+}
+
+@media (prefers-color-scheme: dark) {
+  .content-highlight-box {
+    border-color: #60a5fa;
+    background: #1f2937;
+  }
+  
+  .content-highlight-box::before {
+    background: #1f2937;
+    color: #60a5fa;
+  }
+}
+
+/* Professional list styling with actual bullets */
+.prose ul li {
+  padding-left: 0.5rem;
+}
+
+.prose ul li::marker {
+  content: '•';
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+/* Special styling for checkmark lists - Checkmarks will use regular bullet styling */
+
+/* Magazine-style pull quotes */
+.prose .pullquote {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 2.5rem 0;
+  padding: 1.5rem 2rem;
+  border-left: 4px solid #2563EB;
+  background: #f9fafb;
+  font-style: italic;
+}

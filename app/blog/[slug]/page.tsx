@@ -116,7 +116,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              <article className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+              <article className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700">
                 {/* Featured Image */}
                 {blog.image && (
                   <div className="relative h-96 bg-gray-200 dark:bg-gray-700">
@@ -130,7 +130,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   </div>
                 )}
 
-                <div className="p-8">
+                <div className="p-8 md:p-12">
+                  {/* Category Badge */}
+                  {blog.category && (
+                    <div className="mb-4">
+                      <span className="inline-block px-4 py-2 text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full">
+                        {blog.category}
+                      </span>
+                    </div>
+                  )}
+
                   {/* Tags */}
                   {blog.tags && blog.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-4">
@@ -146,21 +155,42 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   )}
 
                   {/* Title */}
-                  <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 text-gray-900 dark:text-white leading-tight tracking-tight">
                     {blog.title}
                   </h1>
 
                   {/* Meta Info */}
-                  <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-                    <time dateTime={blog.date}>
-                      {new Date(blog.date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </time>
+                  <div className="flex flex-wrap items-center gap-3 text-gray-600 dark:text-gray-400 mb-8 pb-8 border-b-2 border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <time dateTime={blog.date}>
+                        {new Date(blog.date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </time>
+                    </div>
                     <span>•</span>
-                    <span>{blog.author}</span>
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <span>{blog.author}</span>
+                    </div>
+                    {blog.readingTime && (
+                      <>
+                        <span>•</span>
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>{blog.readingTime}</span>
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   {/* Ad Space before content */}
@@ -172,21 +202,31 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
                   {/* Blog Content */}
                   <div 
-                    className="prose dark:prose-invert max-w-none
-                      prose-headings:text-gray-900 dark:prose-headings:text-white
-                      prose-h1:text-3xl prose-h1:font-bold prose-h1:mb-4
-                      prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4
-                      prose-h3:text-xl prose-h3:font-bold prose-h3:mt-6 prose-h3:mb-3
-                      prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:mb-4 prose-p:leading-relaxed
-                      prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
-                      prose-strong:text-gray-900 dark:prose-strong:text-white prose-strong:font-bold
-                      prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4
-                      prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4
-                      prose-li:text-gray-700 dark:prose-li:text-gray-300 prose-li:mb-2
-                      prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:italic
-                      prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm
-                      prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800 prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto
-                      prose-img:rounded-lg prose-img:shadow-md"
+                    className="prose prose-xl dark:prose-invert max-w-none editorial-content
+                      prose-headings:font-black prose-headings:text-gray-900 dark:prose-headings:text-white prose-headings:tracking-tight
+                      prose-h1:text-5xl prose-h1:mb-8 prose-h1:mt-10 prose-h1:leading-tight prose-h1:font-black
+                      prose-h2:text-[2.5rem] prose-h2:mt-16 prose-h2:mb-8 prose-h2:leading-tight prose-h2:border-b-[3px] prose-h2:border-gray-300 dark:prose-h2:border-gray-600 prose-h2:pb-4 prose-h2:pl-6 prose-h2:font-black
+                      prose-h3:text-[2rem] prose-h3:mt-12 prose-h3:mb-6 prose-h3:leading-snug prose-h3:font-black prose-h3:border-b-2 prose-h3:border-gray-200 dark:prose-h3:border-gray-700 prose-h3:pb-3
+                      prose-h4:text-[1.75rem] prose-h4:mt-10 prose-h4:mb-5 prose-h4:font-black prose-h4:text-gray-800 dark:prose-h4:text-gray-100
+                      prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-p:mb-6 prose-p:leading-[1.85] prose-p:text-[1.125rem]
+                      prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:font-semibold prose-a:underline prose-a:decoration-transparent hover:prose-a:decoration-blue-600 prose-a:underline-offset-2 prose-a:transition-all prose-a:text-[1.125rem]
+                      prose-strong:text-gray-900 dark:prose-strong:text-white prose-strong:font-black prose-strong:text-[1.125rem]
+                      prose-em:italic prose-em:text-gray-700 dark:prose-em:text-gray-300 prose-em:text-[1.125rem]
+                      prose-ul:my-6 prose-ul:space-y-3 prose-ul:list-disc prose-ul:pl-6
+                      prose-ol:my-6 prose-ol:space-y-3 prose-ol:pl-6
+                      prose-li:text-gray-800 dark:prose-li:text-gray-200 prose-li:leading-[1.85] prose-li:text-[1.125rem] prose-li:pl-2 prose-li:mb-2
+                      prose-li::marker:text-blue-600 prose-li::marker:font-black prose-li::marker:text-lg
+                      prose-blockquote:border-l-[5px] prose-blockquote:border-blue-600 prose-blockquote:bg-blue-50/50 dark:prose-blockquote:bg-blue-900/20 prose-blockquote:pl-6 prose-blockquote:pr-6 prose-blockquote:py-5 prose-blockquote:my-8 prose-blockquote:rounded-r-lg prose-blockquote:shadow-md prose-blockquote:text-[1.125rem] prose-blockquote:leading-[1.85]
+                      prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-[1rem] prose-code:font-mono prose-code:text-blue-600 dark:prose-code:text-blue-400 prose-code:font-semibold
+                      prose-pre:bg-gray-900 dark:prose-pre:bg-gray-950 prose-pre:p-6 prose-pre:rounded-xl prose-pre:overflow-x-auto prose-pre:my-8 prose-pre:shadow-lg prose-pre:border prose-pre:border-gray-700 prose-pre:text-[1rem]
+                      prose-img:rounded-xl prose-img:shadow-xl prose-img:my-10 prose-img:border prose-img:border-gray-200 dark:prose-img:border-gray-700
+                      prose-hr:border-0 prose-hr:border-t-[3px] prose-hr:border-double prose-hr:border-gray-300 dark:prose-hr:border-gray-600 prose-hr:my-12
+                      prose-table:border-collapse prose-table:w-full prose-table:my-8 prose-table:border prose-table:border-gray-300 dark:prose-table:border-gray-600 prose-table:shadow-sm prose-table:text-[1.125rem]
+                      prose-thead:bg-gray-50 dark:prose-thead:bg-gray-800
+                      prose-th:bg-gray-100 dark:prose-th:bg-gray-800 prose-th:p-4 prose-th:text-left prose-th:font-black prose-th:uppercase prose-th:text-[1rem] prose-th:tracking-wide prose-th:border-b-2 prose-th:border-gray-300 dark:prose-th:border-gray-600
+                      prose-td:border prose-td:border-gray-200 dark:prose-td:border-gray-700 prose-td:p-4 prose-td:text-gray-800 dark:prose-td:text-gray-200 prose-td:text-[1.125rem]
+                      prose-tr:border-b prose-tr:border-gray-200 dark:prose-tr:border-gray-700
+                      first:prose-p:text-[1.25rem] first:prose-p:text-gray-700 dark:first:prose-p:text-gray-300 first:prose-p:leading-[1.85] first:prose-p:font-medium"
                     dangerouslySetInnerHTML={{ __html: blog.content }}
                   />
 

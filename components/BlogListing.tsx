@@ -69,6 +69,15 @@ export function BlogListing({ blogs }: BlogListingProps) {
 
               {/* Blog Content */}
               <div className="p-6">
+                {/* Category Badge */}
+                {blog.category && (
+                  <div className="mb-3">
+                    <span className="inline-block px-3 py-1 text-xs font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full">
+                      {blog.category}
+                    </span>
+                  </div>
+                )}
+
                 {/* Tags */}
                 {blog.tags && blog.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-3">
@@ -90,7 +99,7 @@ export function BlogListing({ blogs }: BlogListingProps) {
                   </h2>
                 </Link>
 
-                {/* Date & Author */}
+                {/* Date, Author & Reading Time */}
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
                   <time dateTime={blog.date}>
                     {new Date(blog.date).toLocaleDateString('en-US', {
@@ -101,6 +110,17 @@ export function BlogListing({ blogs }: BlogListingProps) {
                   </time>
                   <span>•</span>
                   <span>{blog.author}</span>
+                  {blog.readingTime && (
+                    <>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {blog.readingTime}
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 {/* Description */}

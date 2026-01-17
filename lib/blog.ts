@@ -17,6 +17,8 @@ export interface BlogPost {
   author: string;
   tags: string[];
   content: string;
+  readingTime?: string;
+  category?: string;
 }
 
 export interface BlogMetadata {
@@ -27,6 +29,8 @@ export interface BlogMetadata {
   image: string;
   author: string;
   tags: string[];
+  readingTime?: string;
+  category?: string;
 }
 
 // Get all blog slugs
@@ -56,9 +60,11 @@ export async function getBlogBySlug(slug: string): Promise<BlogPost> {
     title: data.title,
     date: data.date,
     description: data.description,
-    image: data.image,
+    image: data.image || '/images/blog/default.jpg',
     author: data.author || 'SmartToolsHub Team',
     tags: data.tags || [],
+    readingTime: data.readingTime,
+    category: data.category,
     content: contentHtml,
   };
 }
@@ -76,9 +82,11 @@ export function getAllBlogMetadata(): BlogMetadata[] {
       title: data.title,
       date: data.date,
       description: data.description,
-      image: data.image,
+      image: data.image || '/images/blog/default.jpg',
       author: data.author || 'SmartToolsHub Team',
       tags: data.tags || [],
+      readingTime: data.readingTime,
+      category: data.category,
     };
   });
 
